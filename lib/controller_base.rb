@@ -4,10 +4,10 @@ require 'erb'
 require_relative './session'
 
 class ControllerBase
-  attr_reader :req, :res, :params
+  attr_reader :req, :res, :params, :session
 
   # Setup the controller
-  def initialize(req, res, routes_params)
+  def initialize(req, res, routes_params = {})
     @req = req
     @res = res
     @already_built_response = false
@@ -24,7 +24,7 @@ class ControllerBase
     raise "double render error" if already_built_response?
     res.status = 302
     res.header["Location"] = url
-    @session.store_session(res)
+    session.store_session(res)
     @already_built_response = true
   end
 
@@ -35,7 +35,7 @@ class ControllerBase
     raise "double render error" if already_built_response?
     res['Content-Type'] = content_type
     res.write(content)
-    @session.store_session(res)
+    session.store_session(res)
     @already_built_response = true
   end
 
